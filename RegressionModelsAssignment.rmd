@@ -7,7 +7,7 @@ output: pdf_document
 
 ## Executive Summary
 
-This study attempts to quantify the effects of type of transmission on mileage(mpg). The study concludes that manual transmission is better for mpg compared to automatic transmission. Change in mpg by moving to a manual transmission from automatic is between 0.045 and 5.826, holding other parameters constant. It was also found that weight and qsec parameters of the car had significant impact on mileage, in addition to type of transmission.
+This study attempts to quantify the effects of type of transmission on mileage(mpg). The study concludes that manual transmission is better for mpg compared to automatic transmission. Change in mpg by moving to a manual transmission from automatic is estimated to be around 2.936 holding other parameters constant.  The 95% confidence interval for this increase is [0.045 , 5.826], holding other parameters constant. In addition to the transmission type,  weight and qsec parameters  had significant impact on automobile mileage.
 
 ## Exploratory data analysis
 Goal of analysis is to answer  key  questions on  relationship between  mileage (mpg) and type of transmission(am) as found in the **mtcars** dataset in R. Refer to the help (?mtcars) for details on data set.
@@ -59,7 +59,7 @@ Secondly, lets get the 95% confidence intervals for the parameters:
 confint(finalfit)
 ```
 
-Based on this we can say that 95% confidence interval for change in mpg by using manual transmission Vs Auto is between 0.045 and 5.826 holding other two regressors constant.
+Based on this we can say that 95% confidence interval for change in mpg by using manual transmission Vs Auto is between 0.045 and 5.826 holding other two regressors constant. The estimated value within this interval as noted from the final model coefficient is 2.936.
 
 
 \newpage
