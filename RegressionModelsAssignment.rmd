@@ -1,0 +1,85 @@
+---
+title: "Effect of type of transmission on Mileage"
+author: "Koushik Kumaraswamy"
+date: "Tuesday, October 21, 2014"
+output: pdf_document
+---
+
+## Executive Summary
+
+This study attempts to quantify the effects of type of transmission on mileage(mpg). The study concludes that manual transmission is better for mpg compared to automatic transmission. Change in mpg by moving to a manual transmission from automatic is between 0.045 and 5.826, holding other parameters constant. It was also found that weight and qsec parameters of the car had significant impact on mileage, in addition to type of transmission.
+
+## Exploratory data analysis
+Goal of analysis is to answer  key  questions on  relationship between  mileage (mpg) and type of transmission(am) as found in the **mtcars** dataset in R. Refer to the help (?mtcars) for details on data set.
+
+Appendix 1 pairs plot  reveals that **mpg** seems to have a negative relationship with **cyl**,**disp**,**hp**, **wt**, and **carb** fields. A postive relationship is indicated between **mpg** and **drat** , **qsec**, and **gear**
+
+Both **am** and **vs** are indicator fields where the classes corresponding to **1** have better mileage relative to **0** class. 
+
+## Model Selection
+
+We first fit **mpg** to **am** and initially ignore effects of other 9 predictors.
+```{r modelam,echo=FALSE}
+data(mtcars); 
+amfit<-lm(mpg~am,data=mtcars)
+summary(amfit)$coefficients
+```
+ **p** value of **beta_1**  is  significant and  **beta_1** = 7.24 is the change in mpg between  automatic (am=0) and manual (am=1) holding all other regressors constant. We still need to review  the effects of the other predictors. So let's  fit a  maximal model using all predictors.
+```{r modelmax, echo=FALSE}
+data(mtcars);
+fullfit<-lm(mpg~.,data=mtcars)
+summary(fullfit)$coefficients
+print(paste0("Adjusted R^2: ",summary(fullfit)$adj.r.squared))
+```
+None of the **p** values are <0.05: hence not a good model . We need to reduce this to a "minimally adeqate" /  parsimonious model  by performing stepwise regression in backward direction. Start with  **fullfit**  above and take out  least significant parameters in iterations until we have a  model with the least # of significant predictors. 
+
+```{r minadeqmodel,echo=FALSE}
+step(fullfit, direction="backward",trace=FALSE)
+finalfit<-lm(mpg~wt+qsec+am,data=mtcars)
+summary(finalfit)$coefficients
+print(paste0("Adjusted R^2: ",summary(finalfit)$adj.r.squared))
+```
+
+This has higher adjusted R^2  vs fullfit model inspite of using only 3/10th of the predictors and is our answer to capturing  effects of all significant predictors. 
+
+## Residual & other diagnostics 
+
+Reviewing the  2x2 diagnostic plot in Appendix 2, we find that: 
+(a)Residual & standarized residual plot do not show significant patters in variation,
+(b)Normal QQ plots indicate that the errors are normally distributed,
+(c)Residual vs leverage plot do not indicate significant outliers 
+
+## Getting to the answers
+
+Firstly, We can safely say that manual transmission is better for MPG since the **am** coefficient that indicates the difference in mpg between 0(auto) and 1(manual) is positive.
+
+Secondly, lets get the 95% confidence intervals for the parameters:
+
+```{r conf,echo=FALSE}
+confint(finalfit)
+```
+
+Based on this we can say that 95% confidence interval for change in mpg by using manual transmission Vs Auto is between 0.045 and 5.826 holding other two regressors constant.
+
+
+\newpage
+
+
+## Appendix 1 : Pairs Plot 
+
+Initial plot of pairs of regressors:
+```{r figone}
+data(mtcars)
+pairs(mtcars,panel=panel.smooth)
+```
+
+
+\newpage
+
+## Appendix 2 : Diagnostic plots of final model 
+2x2 Diagnostic  plot of final model:
+```{r figtwo}
+par(mfrow=c(2,2))
+plot(finalfit)
+```
+
